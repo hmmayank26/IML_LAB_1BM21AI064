@@ -1,0 +1,57 @@
+import pandas as pd
+
+# Hypothetical training data
+data = {
+    'Sky': ['Sunny', 'Cloudy', 'Sunny', 'Rainy', 'Sunny'],
+    'AirTemp': ['Warm', 'Cold', 'Warm', 'Cold', 'Warm'],
+    'Humidity': ['Normal', 'High', 'High', 'High', 'Normal'],
+    'Wind': ['Strong', 'Weak', 'Weak', 'Weak', 'Strong'],
+    'EnjoySport': ['Yes', 'No', 'Yes', 'No', 'Yes']
+}
+
+df = pd.DataFrame(data)
+
+def initialize_hypotheses(attributes):
+    # Initialize the hypothesis space with the most specific and most general hypotheses
+    specific_hypothesis = {attr: ['?'] for attr in attributes}
+    general_hypothesis = {attr: ['0'] for attr in attributes}
+    return specific_hypothesis, general_hypothesis
+
+def is_consistent(hypothesis, example):
+    # Check if the hypothesis is consistent with the example
+    for attr in hypothesis.keys():
+        if hypothesis[attr][0] != '?' and hypothesis[attr][0] != example[attr]:
+            return False
+    return True
+
+def candidate_elimination_algorithm(training_data):
+    attributes = training_data.columns[:-1].tolist()
+    specific_hypothesis, general_hypothesis = initialize_hypotheses(attributes)
+
+    # Iterate over each example in the training data
+    for index, example in training_data.iterrows():
+        if example['EnjoySport'] == 'Yes':
+            # If example is positive, generalize the specific hypothesis
+            for attr in attributes:
+                if specific_hypothesis[attr][0] == '?' and specific_hypothesis[attr][0] != example[attr]:
+                    specific_hypothesis[attr][0] = example[attr]
+                elif specific_hypothesis[attr][0] != '?' and specific_hypothesis[attr][0] != example[attr]:
+                    # Create a more general hypothesis
+                    general_hypothesis[attr][0] = '?'
+        else:
+            # If example is negative, specialize the general hypothesis
+            for attr in attributes:
+                if general_hypothesis[attr][0] == '?' and specific_hypothesis[attr][0] != example[attr]:
+                    general_hypothesis[attr][0] = specific_hypothesis[attr][0]
+    
+    return specific_hypothesis, general_hypothesis
+
+# Apply Candidate Elimination algorithm to the dataset
+specific, general = candidate_elimination_algorithm(df)
+
+# Display the final hypotheses
+print("Specific Hypothesis:")
+print(pd.DataFrame(specific))
+
+print("\nGeneral Hypothesis:")
+print(pd.DataFrame(general))
