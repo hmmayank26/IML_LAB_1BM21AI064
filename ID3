@@ -1,0 +1,28 @@
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, export_text
+
+# Load Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a decision tree classifier using ID3 algorithm
+id3_classifier = DecisionTreeClassifier(criterion="entropy")
+id3_classifier.fit(X_train, y_train)
+
+# Print the decision tree rules
+tree_rules = export_text(id3_classifier, feature_names=iris.feature_names)
+print("Decision Tree Rules:\n", tree_rules)
+
+# Evaluate the model on the testing set
+accuracy = id3_classifier.score(X_test, y_test)
+print("\nAccuracy on Test Set:", accuracy)
+
+# Classify a new sample
+new_sample = [[5.0, 3.5, 1.5, 0.2]]  # Replace with your own sample
+prediction = id3_classifier.predict(new_sample)
+print("\nPrediction for the new sample:", iris.target_names[prediction[0]])
