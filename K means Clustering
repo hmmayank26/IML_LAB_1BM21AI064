@@ -1,0 +1,36 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn import datasets
+
+# Load Iris dataset
+iris = datasets.load_iris()
+X = iris.data
+
+# Choose the number of clusters (K)
+k = 3
+
+# Create a K-Means model
+kmeans = KMeans(n_clusters=k, random_state=42)
+
+# Fit the model to the data
+kmeans.fit(X)
+
+# Get cluster labels and centroids
+labels = kmeans.labels_
+centroids = kmeans.cluster_centers_
+
+# Visualize the clusters
+colors = ['red', 'green', 'blue']
+
+for i in range(k):
+    cluster_points = X[labels == i]
+    plt.scatter(cluster_points[:, 0], cluster_points[:, 1], c=colors[i], label=f'Cluster {i + 1}')
+
+# Plot centroids
+plt.scatter(centroids[:, 0], centroids[:, 1], marker='X', s=200, color='black', label='Centroids')
+plt.title('K-Means Clustering - Iris Dataset')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.legend()
+plt.show()
