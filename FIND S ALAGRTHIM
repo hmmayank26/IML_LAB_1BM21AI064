@@ -1,0 +1,39 @@
+import pandas as pd
+
+# Generate a hypothetical dataset
+data = {
+    'Sky': ['Sunny', 'Cloudy', 'Sunny', 'Rainy', 'Sunny'],
+    'AirTemp': ['Warm', 'Cold', 'Warm', 'Cold', 'Warm'],
+    'Humidity': ['Normal', 'High', 'High', 'High', 'Normal'],
+    'Wind': ['Strong', 'Weak', 'Weak', 'Weak', 'Strong'],
+    'EnjoySport': ['Yes', 'No', 'Yes', 'No', 'Yes']
+}
+
+df = pd.DataFrame(data)
+
+def find_s_algorithm(training_data):
+    # Initialize the hypothesis with the most specific values
+    hypothesis = {
+        'Sky': ['?', '?', '?', '?', '?'],
+        'AirTemp': ['?', '?', '?', '?', '?'],
+        'Humidity': ['?', '?', '?', '?', '?'],
+        'Wind': ['?', '?', '?', '?', '?'],
+        'EnjoySport': ['Yes', 'No', 'Yes', 'No', 'Yes']
+    }
+
+    # Iterate over each positive example in the training data
+    for index, example in training_data.iterrows():
+        if example['EnjoySport'] == 'Yes':
+            # Update the hypothesis based on the positive example
+            for attribute in hypothesis.keys():
+                if example[attribute] != hypothesis[attribute][index]:
+                    hypothesis[attribute][index] = example[attribute]
+
+    return hypothesis
+
+# Apply FIND-S algorithm to the dataset
+hypothesis = find_s_algorithm(df)
+
+# Display the final hypothesis
+print("Final Hypothesis:")
+print(pd.DataFrame(hypothesis))
